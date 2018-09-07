@@ -1,0 +1,143 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FiddlerCore.PlatformExtensions.Windows</name>
+    </assembly>
+    <members>
+        <member name="M:FiddlerCore.PlatformExtensions.Windows.PortProcessMapperForWindows.FindPIDForPort(System.Int32,System.Boolean,System.String@)">
+            <summary>
+            Given a local port number, uses GetExtendedTcpTable to find the originating process ID. 
+            First checks the IPv4 connections, then looks at IPv6 connections.
+            </summary>
+            <param name="iTargetPort">Client applications' port</param>
+            <returns>ProcessID, or 0 if not found</returns>
+        </member>
+        <member name="M:FiddlerCore.PlatformExtensions.Windows.PortProcessMapperForWindows.FindPIDForConnection(System.Int32,System.UInt32,FiddlerCore.PlatformExtensions.Windows.PortProcessMapperForWindows.TcpTableType,System.String@)">
+            <summary>
+            Calls the GetExtendedTcpTable function to map a port to a process ID.
+            This function is (over) optimized for performance.
+            </summary>
+            <param name="iTargetPort">Client port</param>
+            <param name="iAddressType">AF_INET or AF_INET6</param>
+            <returns>PID, if found, or 0</returns>
+        </member>
+        <member name="T:FiddlerCore.PlatformExtensions.Windows.PortProcessMapperForWindows.TcpTableType">
+            <summary>
+            Enumeration of possible queries that can be issued using GetExtendedTcpTable
+            http://msdn2.microsoft.com/en-us/library/aa366386.aspx
+            </summary>
+        </member>
+        <member name="F:FiddlerCore.PlatformExtensions.Windows.PortProcessMapperForWindows.TcpTableType.OwnerPidListener">
+            <summary>
+            Processes listening on Ports
+            </summary>
+        </member>
+        <member name="F:FiddlerCore.PlatformExtensions.Windows.PortProcessMapperForWindows.TcpTableType.OwnerPidConnections">
+            <summary>
+            Processes with active TCP/IP connections
+            </summary>
+        </member>
+        <member name="T:FiddlerCore.PlatformExtensions.Windows.RASInfo">
+            <summary>
+            The RASInfo class is used to enumerate Network Connectoids so Fiddler can adjust proxy configuration for all connectoids, not just the DefaultLAN
+            </summary>
+        </member>
+        <member name="M:FiddlerCore.PlatformExtensions.Windows.RASInfo.GetConnectionNames">
+            <summary>
+            Ask RAS for the list of network connectoids. We'll always add "DefaultLAN" to this list as well.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="E:FiddlerCore.PlatformExtensions.Windows.RegistryWatcher.KeyChanged">
+            <summary>
+            Fires when the specified registry key has changed.
+            </summary>
+        </member>
+        <member name="M:FiddlerCore.PlatformExtensions.Windows.RegistryWatcher.WatchKey(Microsoft.Win32.RegistryHive,System.String,System.EventHandler)">
+            <summary>
+            Watch a registry key for changes to its values.
+            </summary>
+            <param name="registryHive">The Registry Hive in which the key lives</param>
+            <param name="subKey">The key, e.g. \Software\Microsoft\Fiddler2\</param>
+            <param name="oToNotify">The Event Handler to invoke when a change occurs.</param>
+            <returns>A new RegistryWatcher object.</returns>
+        </member>
+        <member name="M:FiddlerCore.PlatformExtensions.Windows.RegistryWatcher.Start">
+            <summary>
+            Start monitoring.
+            </summary>
+        </member>
+        <member name="M:FiddlerCore.PlatformExtensions.Windows.RegistryWatcher.Stop">
+            <summary>
+            Stops the monitoring thread.
+            </summary>
+        </member>
+        <member name="M:FiddlerCore.PlatformExtensions.Windows.WinHttpAutoProxy.TryGetPacUrl(System.String@)">
+            <summary>
+            Outs WPAD-discovered URL for display purposes (e.g. Help> About); note that we don't actually use this when determining the gateway,
+            instead relying on the WinHTTPGetProxyForUrl function to do this work for us.
+            </summary>
+            <returns>A WPAD url, if found, or String.Empty</returns>
+        </member>
+        <member name="M:FiddlerCore.PlatformExtensions.Windows.WinHttpAutoProxy.WinHttpGetProxyForUrlThreadSafe(System.IntPtr,System.String,FiddlerCore.PlatformExtensions.Windows.WinHttpAutoProxy.WINHTTP_AUTOPROXY_OPTIONS@,FiddlerCore.PlatformExtensions.Windows.WinHttpAutoProxy.WINHTTP_PROXY_INFO@)">
+            <summary>
+            Note: Be sure to use the same hSession to prevent redownload of the proxy script
+            </summary>
+        </member>
+        <member name="F:FiddlerCore.PlatformExtensions.Windows.WinHttpAutoProxy.WINHTTP_AUTOPROXY_OPTIONS.fAutoLoginIfChallenged">
+            <summary>
+            Set to true to send Negotiate creds when challenged to download the script
+            </summary>
+        </member>
+        <member name="T:FiddlerCore.PlatformExtensions.Windows.WinINetHelper.INTERNET_CACHE_ENTRY_INFOA">
+            <summary>
+            For PInvoke: Contains information about an entry in the Internet cache
+            </summary>
+        </member>
+        <member name="M:FiddlerCore.PlatformExtensions.Windows.XpressCompressionHelperForWindows.Decompress(System.Byte[])">
+            <summary>
+            Requires Win8+
+            Decompress Xpress|Raw blocks used by WSUS, etc.
+            Introduction to the API is at http://msdn.microsoft.com/en-us/library/windows/desktop/hh920921(v=vs.85).aspx
+            </summary>
+            <param name="compressedData"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Fiddler.WinINETProxyInfo">
+            <summary>
+            Wrapper for WinINET proxy configuration APIs
+            </summary>
+        </member>
+        <member name="F:Fiddler.WinINETProxyInfo._bAutoDetectWasUserSet">
+            <summary>
+            Ignore WinINET "no autoproxy unticks box" optimization
+            </summary>
+        </member>
+        <member name="P:Fiddler.WinINETProxyInfo.bBypassIntranetHosts">
+            <summary>
+            True if the proxy should be bypassed for dotless hostnames.
+            NOTE: Simply looks at the bypassList string to see if it contains a LOCAL rule.
+            </summary>
+        </member>
+        <member name="M:Fiddler.WinINETProxyInfo.CreateFromNamedConnection(System.String)">
+            <summary>
+            Gathers proxy information from a named connection.
+            </summary>
+            <param name="sConnectionName">Pass DefaultLAN to look for the "null" connection</param>
+            <returns>Proxy info, or null</returns>
+        </member>
+        <member name="M:Fiddler.WinINETProxyInfo.GetFromWinINET(System.String)">
+            <summary>
+            Fills this WinINETProxyInfo instance with settings from specified WinINET connection.
+            </summary>
+            <param name="sConnectionName">Name of the connection. Pass NULL for LAN connection.</param>
+            <returns>TRUE if the settings were successfully retrieved.</returns>
+        </member>
+        <member name="M:Fiddler.WinINETProxyInfo.SetInternetSettings(System.String)">
+            <summary>
+            Sets WinINET proxy settings for specified connection to those specified in this WinINETProxy instance.
+            </summary>
+            <param name="sConnectionName">Name of the connection. Pass NULL for LAN connection.</param>
+        </member>
+    </members>
+</doc>

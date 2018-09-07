@@ -1,0 +1,394 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FiddlerCore.API</name>
+    </assembly>
+    <members>
+        <member name="F:Fiddler.Connectoid.sConnectionName">
+            <summary>
+            The DisplayName for this Connection
+            </summary>
+        </member>
+        <member name="F:Fiddler.Connectoid.bIsHooked">
+            <summary>
+            Is this Connectoid expected to be pointed at Fiddler?
+            </summary>
+        </member>
+        <member name="F:Fiddler.Connectoid.oOriginalProxyInfo">
+            <summary>
+            The proxy settings collected from this connection before Fiddler was attached.
+            </summary>
+        </member>
+        <member name="F:Fiddler.ProxyInfo._bAutoDetect">
+            <summary>
+            Attempt WPAD autoproxy detection
+            </summary>
+        </member>
+        <member name="F:Fiddler.ProxyInfo._sHostsThatBypass">
+            <summary>
+            Hostnames of sites to bypass proxy. &lt;local&gt; is common.
+            </summary>
+        </member>
+        <member name="F:Fiddler.ProxyInfo._bDirect">
+            <summary>
+            Allow direct connection to host
+            </summary>
+        </member>
+        <member name="F:Fiddler.ProxyInfo._bUseConfigScript">
+            <summary>
+            Use user-supplied URL to get FindProxyForURL script
+            </summary>
+        </member>
+        <member name="F:Fiddler.ProxyInfo._sScriptURL">
+            <summary>
+            WPAD script url that may be used if _bUseScript true
+            </summary>
+        </member>
+        <member name="P:Fiddler.ProxyInfo.sHttpProxy">
+            <summary>
+            String representing the endpoint of the proxy for HTTP-traffic, if configured
+            </summary>
+        </member>
+        <member name="P:Fiddler.ProxyInfo.sHttpsProxy">
+            <summary>
+            String representing the endpoint of the proxy for HTTPS-traffic, if configured
+            </summary>
+        </member>
+        <member name="P:Fiddler.ProxyInfo.sFtpProxy">
+            <summary>
+            String representing the endpoint of the proxy for FTP-traffic, if configured
+            </summary>
+        </member>
+        <member name="P:Fiddler.ProxyInfo.sSocksProxy">
+            <summary>
+            String representing the endpoint of the proxy for SOCKS-traffic, if configured
+            </summary>
+        </member>
+        <member name="P:Fiddler.ProxyInfo.AllValidProtocolsEnabled">
+            <summary>
+            TRUE if all pairs proxies for protocols are valid and they are enabled or proxies for protocols are empty and they are disabled
+            </summary>
+        </member>
+        <member name="P:Fiddler.ProxyInfo.bAllowDirect">
+            <summary>
+            TRUE if a direct HTTP connection may be made if AutoProxy/PAC is unreachable or corrupt
+            </summary>
+        </member>
+        <member name="P:Fiddler.ProxyInfo.sPACScriptLocation">
+            <summary>
+            Returns a string pointing to the ProxyAutoConfig script, or null if there is no such URL or it is not enabled
+            </summary>
+        </member>
+        <member name="P:Fiddler.ProxyInfo.bAutoDetect">
+            <summary>
+            Bool indicating whether this connection is set to autodetect the proxy
+            </summary>
+        </member>
+        <member name="P:Fiddler.ProxyInfo.sHostsThatBypass">
+            <summary>
+            Semi-colon delimited list of hostnames that should bypass the fixed proxy
+            </summary>
+        </member>
+        <member name="M:Fiddler.ProxyInfo.CalculateProxyString">
+            <summary>
+            Calculate a string suitable for passing into WinINET APIs.
+            </summary>
+            <returns>Returns a string containing proxy information, or NULL. NB: I've seen WinINET blow up when passed String.Empty rather than null.
+            </returns>
+        </member>
+        <member name="M:Fiddler.ProxyInfo.SetManualProxies(System.String)">
+            <summary>
+            Given a proxy string, we crack out the proxy gateways for each protocol
+            </summary>
+            <param name="sProxyString">e.g. HTTP=itgproxy:80;FTP=ftpprox:21;</param>
+            <returns>false on error</returns>
+        </member>
+        <member name="M:Fiddler.ProxyInfo.ToString">
+            <summary>
+            Get a string describing the proxy settings
+            </summary>
+            <returns>Returns a multi-line string representing the proxy settings</returns>
+        </member>
+        <member name="T:FiddlerCore.API.IAutoProxy">
+            <summary>
+            Implement this interface to handle upstream gateways when the client is configured to use WPAD or a Proxy AutoConfig (PAC) script.
+            </summary>
+        </member>
+        <member name="M:FiddlerCore.API.IAutoProxy.TryGetProxyForUrl(System.String,System.String@,System.String@)">
+            <summary>
+            Outs the <paramref name="proxy"/> for the requested <paramref name="url"/>.
+            </summary>
+            <param name="url">The URL for which the <paramref name="proxy"/> should be determined.</param>
+            <param name="proxy">One or more of the following strings separated by semicolons.
+            ([&lt;scheme&gt;=][&lt;scheme&gt;"://"]&lt;server&gt;[":"&lt;port&gt;])</param>
+            <param name="errorMessage">If the method fails this parameter should contain the error message, null otherwise.</param>
+            <returns>True if the method succeeds, false otherwise.</returns>
+        </member>
+        <member name="M:FiddlerCore.API.IAutoProxy.TryGetPacUrl(System.String@)">
+            <summary>
+            Outs WPAD-discovered URL of the Proxy Auto-Config file.
+            </summary>
+            <param name="pacUrl">The Proxy Auto-Config URL.</param>
+            <returns>True if the method succeeds, false otherwise.</returns>
+        </member>
+        <member name="T:FiddlerCore.API.IMacSpecificPlatformExtensions">
+            <summary>
+            Implement this interface in order to provide FiddlerCore with Mac-specific functionality.
+            </summary>
+        </member>
+        <member name="P:FiddlerCore.API.IMacSpecificPlatformExtensions.ProxyInfoSerializer">
+            <summary>
+            Gets a ProxyInfo serializer.
+            </summary>
+        </member>
+        <member name="M:FiddlerCore.API.IMacSpecificPlatformExtensions.EnsureConsecutiveProtocols(System.Security.Authentication.SslProtocols)">
+            <summary>
+            Use this method to ensure that the passed protocols are consecutive. It is done by adding missing
+            protocols from the sequence, thus filling the gaps, if any. Works only with Tls, Tls11 and Tls12.
+            </summary>
+            <example>
+            Passed protocols: Tls, Tls12
+            Return value: Tls, Tls11, Tls12
+            </example>
+            <param name="protocols">The input SSL protocols</param>
+            <returns>Consecutive version of the input SSL protocols</returns>
+        </member>
+        <member name="T:FiddlerCore.API.IPlatformExtensions">
+            <summary>
+            Implement this interface in order to provide FiddlerCore with platform specific functionality.
+            </summary>
+        </member>
+        <member name="M:FiddlerCore.API.IPlatformExtensions.TryMapPortToProcessId(System.Int32,System.Boolean,System.Int32@,System.String@)">
+            <summary>
+            Map a local port number to the originating process ID.
+            </summary>
+            <param name="port">The port number.</param>
+            <param name="includeIPv6">true to include processes using IPv6 addresses in the mapping.</param>
+            <param name="processId">Contains the originating process ID if the operation is successful.</param>
+            <param name="errorMessage">Contains an error message if the operation fails.</param>
+            <returns>true if the operation is successful, false otherwise.</returns>
+        </member>
+        <member name="M:FiddlerCore.API.IPlatformExtensions.TryGetListeningProcessOnPort(System.Int32,System.String@,System.Int32@,System.String@)">
+            <summary>
+            Gets any process' name and ID which listens on a port.
+            </summary>
+            <param name="port">The port number.</param>
+            <param name="processName">Contains the process name of a process if there is one listening on the port, otherwise contains an empty string.</param>
+            <param name="processId">Contains the process ID of a process if there is one listening on the port, otherwise contains 0.</param>
+            <param name="errorMessage">Contains an error message if the operation fails.</param>
+            <returns>true if the operation is successful, false otherwise.</returns>
+        </member>
+        <member name="M:FiddlerCore.API.IPlatformExtensions.TryChangeTimersResolution(System.Boolean)">
+            <summary>
+            Changes system-wide timer's resolution.
+            </summary>
+            <param name="increase">true to increase the resolution for better accuracy of timestamps, false to decrease it to the default value for the system.</param>
+            <returns>true if the operation is successful, false otherwise.</returns>
+        </member>
+        <member name="P:FiddlerCore.API.IPlatformExtensions.HighResolutionTimersEnabled">
+            <summary>
+            Returns true if the system-wide timer's resolution is increased, false otherwise.
+            </summary>
+        </member>
+        <member name="P:FiddlerCore.API.IPlatformExtensions.ProxyHelper">
+            <summary>
+            Gets a proxy helper, which can be used to manipulate proxy settings.
+            </summary>
+        </member>
+        <member name="P:FiddlerCore.API.IPlatformExtensions.ProxyInfoFactory">
+            <summary>
+            Gets a ProxyInfo factory.
+            </summary>
+        </member>
+        <member name="E:FiddlerCore.API.IPlatformExtensions.DebugSpew">
+            <summary>
+            This event is raised when a debug message is being spewed.
+            </summary>
+        </member>
+        <member name="E:FiddlerCore.API.IPlatformExtensions.Error">
+            <summary>
+            This event is raised when an error has occured.
+            </summary>
+        </member>
+        <member name="E:FiddlerCore.API.IPlatformExtensions.Log">
+            <summary>
+            This event is raised when a message is being logged.
+            </summary>
+        </member>
+        <member name="M:FiddlerCore.API.IPlatformExtensions.DecompressXpress(System.Byte[])">
+            <summary>
+            Decompresses a byte[] that is compressed with XPRESS.
+            </summary>
+            <param name="data">The compressed byte[].</param>
+            <returns>The decompressed byte[].</returns>
+        </member>
+        <member name="M:FiddlerCore.API.IPlatformExtensions.PostProcessProcessName(System.Int32,System.String)">
+            <summary>
+            This method is used to post-process the name of a process, in order to resolve it more accurately.
+            </summary>
+            <param name="pid">The ID of the process, whose name should be post-processed.</param>
+            <param name="processName">The process name that should be post-processed.</param>
+            <returns>The post-processed process name.</returns>
+        </member>
+        <member name="M:FiddlerCore.API.IPlatformExtensions.SetUserAgentStringForCurrentProcess(System.String)">
+            <summary>
+            This method is used to set the user-agent string for the current process.
+            </summary>
+            <param name="userAgent">The user-agent string.</param>
+        </member>
+        <member name="M:FiddlerCore.API.IPlatformExtensions.TryGetUptimeInMilliseconds(System.UInt64@)">
+            <summary>
+            This method is used to get the number of milliseconds since the system start.
+            </summary>
+            <param name="milliseconds">Contains the system uptime in milliseconds if the operation is successful.</param>
+            <returns>true if the operation is successful, false otherwise.</returns>
+        </member>
+        <member name="M:FiddlerCore.API.IPlatformExtensions.CreateAutoProxy(System.Boolean,System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Creates <see cref="T:FiddlerCore.API.IAutoProxy"/>.
+            </summary>
+            <param name="autoDiscover">True if the <see cref="T:FiddlerCore.API.IAutoProxy"/> must use the WPAD protocol, false otherwise.</param>
+            <param name="pacUrl">URL of the Proxy Auto-Config file. Can be null.</param>
+            <param name="autoProxyRunInProcess">True if the WPAD processing should be done in the current process, false otherwise.</param>
+            <param name="autoLoginIfChallenged">Specifies whether the client's domain credentials should be automatically sent
+            in response to an NTLM or Negotiate Authentication challenge when the <see cref="T:FiddlerCore.API.IAutoProxy"/> requests the PAC file.</param>
+            <returns><see cref="T:FiddlerCore.API.IAutoProxy"/></returns>
+        </member>
+        <member name="M:FiddlerCore.API.IPlatformExtensions.GetConnectionNames">
+            <summary>
+            Gets an array of all network connections.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FiddlerCore.API.IPlatformExtensions.GetDefaultConnectionNames">
+            <summary>
+            Gets a collection of all default network connections.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FiddlerCore.API.IPlatformExtensions.GetSystemGatewayConnectionName(System.Collections.Generic.IDictionary{System.String,Fiddler.Connectoid})">
+            <summary>
+            Use this method in order to get the connection name of the system gateway.
+            </summary>
+            <param name="connectoids">Mapping of Connectoids' names to the Connectoids themselfs.</param>
+            <returns>The connection name of the system gateway.</returns>
+        </member>
+        <member name="T:FiddlerCore.API.IPlatformExtensionsFactory">
+            <summary>
+            Implement this interface in order to implement a factory, which is used to create <see cref="T:FiddlerCore.API.IPlatformExtensions" /> objects.
+            </summary>
+        </member>
+        <member name="M:FiddlerCore.API.IPlatformExtensionsFactory.CreatePlatformExtensions">
+            <summary>
+            Creates new <see cref="T:FiddlerCore.API.IPlatformExtensions" /> object.
+            </summary>
+            <returns>The platform extensions object.</returns>
+        </member>
+        <member name="T:FiddlerCore.API.IProxyHelper">
+            <summary>
+            Implement this interface, in order to provide FiddlerCore with platform-specific proxy helper.
+            This interface contains members used to manipulate proxy settings.
+            </summary>
+        </member>
+        <member name="M:FiddlerCore.API.IProxyHelper.DisableProxyForCurrentProcess">
+            <summary>
+            Configures the current process to use no proxy.
+            </summary>
+        </member>
+        <member name="M:FiddlerCore.API.IProxyHelper.GetProxyForCurrentProcessAsHexView">
+            <summary>
+            Returns the current process' proxy settings.
+            </summary>
+            <returns>String containing a HEX view of the current process' proxy settings.</returns>
+        </member>
+        <member name="M:FiddlerCore.API.IProxyHelper.ResetProxyForCurrentProcess">
+            <summary>
+            Configures current process' proxy settings to default.
+            </summary>
+        </member>
+        <member name="M:FiddlerCore.API.IProxyHelper.SetProxyForCurrentProcess(System.String,System.String)">
+            <summary>
+            Configures current process' proxy settings.
+            </summary>
+            <param name="proxy">The proxy information (IP and port). It can be per connection type
+            (e.g. http=127.0.0.1:8080;https=127.0.0.1:444) or global (e.g. 127.0.0.1:8888).</param>
+            <param name="bypassList">Semi-colon delimted list of hosts to bypass proxy
+            (e.g. www.google.com;www.microsoft.com)</param>
+        </member>
+        <member name="T:FiddlerCore.API.IProxyInfoSerializer">
+            <summary>
+            Implement this interface in order to provide FiddlerCore with the ability to serialize a ProxyInfo implementation.
+            </summary>
+        </member>
+        <member name="M:FiddlerCore.API.IProxyInfoSerializer.Serialize(Fiddler.ProxyInfo,System.String)">
+            <summary>
+            Serialize the given <paramref name="proxyInfo"/> to a file at the given <paramref name="filePath"/>.
+            </summary>
+            <param name="proxyInfo">A ProxyInfo instance to be serialized.</param>
+            <param name="filePath">A file path for the resulting file.</param>
+        </member>
+        <member name="M:FiddlerCore.API.IProxyInfoSerializer.Deserialize(System.String)">
+            <summary>
+            Deserialize a ProxyInfo from file at given <paramref name="filePath"/>.
+            </summary>
+            <param name="filePath">A file path to file containing serialized ProxyInfo.</param>
+            <returns>The deserialized ProxyInfo instance.</returns>
+        </member>
+        <member name="T:FiddlerCore.API.IWindowsSpecificPlatformExtensions">
+            <summary>
+            Implement this interface in order to provide FiddlerCore with Windows-specific functionality.
+            </summary>
+        </member>
+        <member name="P:FiddlerCore.API.IWindowsSpecificPlatformExtensions.WinINetHelper">
+            <summary>
+            Gets a WinINet helper, which can be used to access WinINet native API.
+            </summary>
+        </member>
+        <member name="E:FiddlerCore.API.IWindowsSpecificPlatformExtensions.ProxySettingsChanged">
+            <summary>
+            This event is raised when the proxy settings are changed.
+            </summary>
+        </member>
+        <member name="T:FiddlerCore.API.IWinINetHelper">
+            <summary>
+            Implement this interface in order to provide FiddlerCore with access to native WinINet API.
+            </summary>
+        </member>
+        <member name="M:FiddlerCore.API.IWinINetHelper.ClearCacheItems(System.Boolean,System.Boolean)">
+            <summary>
+            Clears WinINet's cache.
+            </summary>
+            <param name="clearFiles">true if cache files should be cleared, false otherwise.</param>
+            <param name="clearCookies">true if cookies should be cleared, false otherwise.</param>
+        </member>
+        <member name="M:FiddlerCore.API.IWinINetHelper.ClearCookiesForHost(System.String)">
+            <summary>
+            Delete all permanent WinINet cookies for a <paramref name="host"/>.
+            </summary>
+            <param name="host">The hostname whose cookies should be cleared.</param>
+        </member>
+        <member name="M:FiddlerCore.API.IWinINetHelper.GetCacheItemInfo(System.String)">
+            <summary>
+            Use this method in order to get cache information for a <paramref name="url"/>.
+            </summary>
+            <param name="url">The URL for which the cache info is requested.</param>
+            <returns>String, containing cache information for the given <paramref name="url"/>.</returns>
+        </member>
+        <member name="T:FiddlerCore.API.MessageEventArgs">
+            <summary>
+            This class is used to pass a simple string message to a event handler.
+            </summary>
+        </member>
+        <member name="M:FiddlerCore.API.MessageEventArgs.#ctor(System.String)">
+            <summary>
+            Creates and initializes new instance of the <see cref="T:FiddlerCore.API.MessageEventArgs"/>. 
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="P:FiddlerCore.API.MessageEventArgs.Message">
+            <summary>
+            Gets the message.
+            </summary>
+        </member>
+    </members>
+</doc>

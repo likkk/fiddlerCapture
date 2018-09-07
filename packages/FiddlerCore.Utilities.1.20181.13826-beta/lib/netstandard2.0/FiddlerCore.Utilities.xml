@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FiddlerCore.Utilities</name>
+    </assembly>
+    <members>
+        <member name="M:FiddlerCore.Utilities.HexViewHelper.ByteArrayToHexView(System.Byte[],System.Int32)">
+            <summary>
+            Pretty-print a Hex view of a byte array. Slow.
+            </summary>
+            <param name="inArr">The byte array</param>
+            <param name="iBytesPerLine">Number of bytes per line</param>
+            <returns>String containing a pretty-printed array</returns>
+        </member>
+        <member name="M:FiddlerCore.Utilities.HexViewHelper.ByteArrayToHexView(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Pretty-print a Hex view of a byte array. Slow.
+            </summary>
+            <param name="inArr">The byte array</param>
+            <param name="iBytesPerLine">Number of bytes per line</param>
+            <param name="iMaxByteCount">The maximum number of bytes to pretty-print</param>
+            <returns>String containing a pretty-printed array</returns>
+        </member>
+        <member name="M:FiddlerCore.Utilities.HexViewHelper.ByteArrayToHexView(System.Byte[],System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Pretty-print a Hex view of a byte array. Slow.
+            </summary>
+            <param name="inArr">The byte array</param>
+            <param name="iBytesPerLine">Number of bytes per line</param>
+            <param name="iMaxByteCount">The maximum number of bytes to pretty-print</param>
+            <param name="bShowASCII">Show ASCII text at the end of each line</param>
+            <returns>String containing a pretty-printed array</returns>
+        </member>
+        <member name="M:FiddlerCore.Utilities.StringHelper.TrimBeforeLast(System.String,System.Char)">
+            <summary>
+            Returns the "Tail" of a string, after (but not including) the Last instance of specified delimiter.
+            <seealso cref="!:TrimBefore(string, char)"/>
+            </summary>
+            <param name="sString">The string to trim from.</param>
+            <param name="chDelim">The delimiting character after which text should be returned.</param>
+            <returns>Part of a string after (but not including) the final chDelim, or the full string if chDelim was not found.</returns>
+        </member>
+        <member name="M:FiddlerCore.Utilities.Utilities.DescribeException(System.Exception)">
+            <summary>
+            Format an Exception message, including InnerException message if present.
+            </summary>
+            <param name="eX"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
